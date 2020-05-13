@@ -32,63 +32,108 @@ class AddContactPageState extends State<AddContactPage> {
   AddContactPageState(this.receivedContact);
 
   Widget _buildName() {
-    return TextFormField(
-      initialValue: _name,
-      decoration: InputDecoration(hintText: 'Name'),
-      maxLength: 50,
-      style: TextStyle(fontSize: 16),
-      validator: (String value) {
-        if (value.isEmpty) {
-          return 'Name is Required';
-        }
+    return ListTile(
+      leading: Icon(Icons.person, color: Colors.blue, size: 35),
+      title: TextFormField(
+        initialValue: _name,
+        decoration: InputDecoration(hintText: 'Name'),
+        maxLength: 50,
+        style: TextStyle(fontSize: 16),
+        validator: (String value) {
+          if (value.isEmpty) {
+            return 'Name is Required';
+          }
 
-        return null;
-      },
-      onSaved: (String value) {
-        _name = value;
-      },
+          return null;
+        },
+        onSaved: (String value) {
+          _name = value;
+        },
+      ),
     );
   }
 
   Widget _buildMobile() {
-    return TextFormField(
-      initialValue: _mobile,
-      decoration: InputDecoration(hintText: 'Mobile'),
-      keyboardType: TextInputType.number,
-      style: TextStyle(fontSize: 16),
-      maxLength: 10,
-      validator: (String value) {
-        if (value == null || value.isEmpty) {
-          return 'Mobile number must be of 10 digits';
-        }
-        return null;
-      },
-      onSaved: (String value) {
-        _mobile = value;
-      },
+    return ListTile(
+      leading: Icon(
+        Icons.phone_android,
+        color: Colors.blue,
+        size: 35,
+      ),
+      title: TextFormField(
+        initialValue: _mobile,
+        decoration: InputDecoration(hintText: 'Mobile'),
+        keyboardType: TextInputType.number,
+        style: TextStyle(fontSize: 16),
+        maxLength: 10,
+        validator: (String value) {
+          if (value == null || value.isEmpty) {
+            return 'Mobile number must be of 10 digits';
+          }
+          return null;
+        },
+        onSaved: (String value) {
+          _mobile = value;
+        },
+      ),
     );
   }
 
   Widget _buildLandline() {
-    return TextFormField(
-      initialValue: _landline,
-      decoration: InputDecoration(hintText: 'Landline'),
-      keyboardType: TextInputType.number,
-      style: TextStyle(fontSize: 16),
-      onSaved: (String value) {
-        _landline = value;
-      },
-    );
+    return ListTile(
+        leading: Icon(Icons.local_phone, color: Colors.blue, size: 35),
+        title: TextFormField(
+          initialValue: _landline,
+          decoration: InputDecoration(hintText: 'Landline'),
+          keyboardType: TextInputType.number,
+          style: TextStyle(fontSize: 16),
+          onSaved: (String value) {
+            _landline = value;
+          },
+        ));
   }
 
-  Widget _buildIsFav() {
-    return SwitchListTile(
-      title: Text("Fav?", style: TextStyle(fontSize: 20)),
-      value: _isFav,
-      onChanged: (bool newValue) => setState(() {
-        _isFav = newValue;
-      }),
-    );
+//  Widget _buildIsFav() {
+//    return SwitchListTile(
+//      title: Text("Fav?", style: TextStyle(fontSize: 20)),
+//      value: _isFav,
+//      onChanged: (bool newValue) => setState(() {
+//        _isFav = newValue;
+//      }),
+//    );
+//  }
+
+//  Widget _buildIsFav() {
+//    return Container(
+//      padding: EdgeInsets.all(0),
+//      child: IconButton(
+//        icon: (_isFav ? Icon(Icons.star) : Icon(Icons.star_border)),
+//        color: Colors.blue,
+//        onPressed: _toggleFavorite,
+//      ),
+//    );
+//  }
+
+  void _toggleFavorite() {
+    setState(() {
+      _isFav = !_isFav;
+      print("user is fav :" + _isFav.toString());
+    });
+  }
+
+  Widget _buildImageAvatar() {
+    return Container(
+        width: 100,
+        height: 100,
+        padding: const EdgeInsets.all(2.0),
+        // border width
+        decoration: new BoxDecoration(
+          color: Colors.blue, // border color
+          shape: BoxShape.circle,
+        ),
+        child: CircleAvatar(
+            backgroundColor: Colors.white,
+            child: Icon(Icons.add_a_photo, color: Colors.blue, size: 40)));
   }
 
   @override
@@ -105,19 +150,35 @@ class AddContactPageState extends State<AddContactPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text("Add Contact")),
-      body: Container(
+      appBar: AppBar(
+        title: Text("Add Contact"),
+        actions: <Widget>[
+          Padding(
+              padding: EdgeInsets.only(right: 20.0),
+              child: GestureDetector(
+                onTap: () {_toggleFavorite();},
+                child: Icon(
+                  _isFav ? Icons.star : Icons.star_border,
+                  size: 26.0,
+                ),
+              ))
+        ],
+      ),
+      body: SingleChildScrollView(
+          child: Container(
         margin: EdgeInsets.all(24),
         child: Form(
           key: _formKey,
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
+              _buildImageAvatar(),
+              SizedBox(height: 30),
               _buildName(),
               _buildMobile(),
               _buildLandline(),
-              SizedBox(height: 16),
-              _buildIsFav(),
+//              SizedBox(height: 16),
+//              _buildIsFav(),
               SizedBox(height: 20),
               widget.contact == null
                   ? RaisedButton(
@@ -207,7 +268,7 @@ class AddContactPageState extends State<AddContactPage> {
             ],
           ),
         ),
-      ),
+      )),
     );
   }
 }
