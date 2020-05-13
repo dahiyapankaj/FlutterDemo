@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
-import 'TodoListPage.dart';
+import 'package:flutterapp/screens/ContactsPage.dart';
+
+import 'TodoPage.dart';
 
 class LoginPage extends StatefulWidget {
   LoginPage({Key key, this.title}) : super(key: key);
@@ -46,7 +48,7 @@ class _LoginPageState extends State<LoginPage> {
           border:
               OutlineInputBorder(borderRadius: BorderRadius.circular(32.0))),
     );
-    final loginButon = Material(
+    final loginTodoButton = Material(
       elevation: 5.0,
       borderRadius: BorderRadius.circular(32.0),
       color: Colors.blue,
@@ -59,7 +61,7 @@ class _LoginPageState extends State<LoginPage> {
             // move to next screens
             Navigator.push(
               context,
-              MaterialPageRoute(builder: (context) => TodoListPage()),
+              MaterialPageRoute(builder: (context) => TodoPage()),
             );
           } else {
             Scaffold.of(context).showSnackBar(SnackBar(
@@ -67,7 +69,36 @@ class _LoginPageState extends State<LoginPage> {
             ));
           }
         },
-        child: Text("Login",
+        child: Text("Login to Todo",
+            textAlign: TextAlign.center,
+            style: style.copyWith(
+                color: Colors.white, fontWeight: FontWeight.bold)),
+      ),
+    );
+
+    final loginContactsButton = Material(
+      elevation: 5.0,
+      borderRadius: BorderRadius.circular(32.0),
+      color: Colors.blue,
+      child: MaterialButton(
+        minWidth: MediaQuery.of(context).size.width,
+        padding: EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
+        onPressed: () {
+          // function to validate and move to next screen
+          if (isDataValid(_email, _password)) {
+            // move to next screens
+            Navigator.push(
+              context,
+//              MaterialPageRoute(builder: (context) => TodoList()),
+              MaterialPageRoute(builder: (context) => ContactsPage()),
+            );
+          } else {
+            Scaffold.of(context).showSnackBar(SnackBar(
+              content: Text("Email and Password cannot be empty"),
+            ));
+          }
+        },
+        child: Text("Login to Contacts",
             textAlign: TextAlign.center,
             style: style.copyWith(
                 color: Colors.white, fontWeight: FontWeight.bold)),
@@ -99,7 +130,11 @@ class _LoginPageState extends State<LoginPage> {
                 SizedBox(
                   height: 35.0,
                 ),
-                loginButon,
+                loginTodoButton,
+                SizedBox(
+                  height: 15.0,
+                ),
+                loginContactsButton,
                 SizedBox(
                   height: 15.0,
                 ),

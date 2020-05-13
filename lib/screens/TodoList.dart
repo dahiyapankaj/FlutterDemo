@@ -15,22 +15,31 @@ class TodoList extends StatelessWidget {
             child: Card(
               elevation: 10,
               child: ListTile(
-                leading: Text(todoList[index].id.toString(),
-                    style: TextStyle(
-                        color: Colors.black,
-                        fontSize: 14,
-                        fontWeight: FontWeight.bold)),
+                leading: CircleAvatar(
+                    backgroundColor: getColor(todoList[index].completed),
+                    child: Text(todoList[index].id.toString(),
+                        style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 14,
+                            fontWeight: FontWeight.bold))),
                 title: Text(
-                    'Task completed: ' +
-                        todoList[index].completed.toString(),
+                    'Task completed: ' + todoList[index].completed.toString(),
                     style: TextStyle(
                         color: Colors.black,
                         fontSize: 14,
                         fontWeight: FontWeight.bold)),
                 subtitle: Text(todoList[index].title),
+                onTap: () {
+                  print("Tapped on the item " + index.toString());
+                },
               ),
             ),
           );
         });
   }
+}
+
+//  Function to return background color for completed items
+getColor(bool completed) {
+  return completed ? Colors.green : Colors.red;
 }

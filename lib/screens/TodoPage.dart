@@ -8,16 +8,16 @@ import 'ErrorPage.dart';
 import 'LoadingPage.dart';
 import 'TodoList.dart';
 
-class TodoListPage extends StatefulWidget {
-  TodoListPage({Key key, this.title}) : super(key: key);
+class TodoPage extends StatefulWidget {
+  TodoPage({Key key, this.title}) : super(key: key);
 
   final String title;
 
   @override
-  _TodoListPageState createState() => _TodoListPageState();
+  _TodoPageState createState() => _TodoPageState();
 }
 
-class _TodoListPageState extends State<TodoListPage> {
+class _TodoPageState extends State<TodoPage> {
   ApiRepository apiRepository = ApiRepository();
   TodoBloc _bloc;
 
@@ -30,9 +30,7 @@ class _TodoListPageState extends State<TodoListPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text('Listing'),
-      ),
+      appBar: AppBar(title: Text('Listing')),
       body: RefreshIndicator(
         onRefresh: () => _bloc.fetchDataList(),
         child: StreamBuilder<ApiResponse<List<Todo>>>(

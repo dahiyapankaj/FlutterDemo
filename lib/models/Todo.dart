@@ -1,5 +1,3 @@
-import 'package:flutter/cupertino.dart';
-
 class Todo {
   int _id;
   int _userId;
@@ -42,6 +40,4 @@ class Todo {
       json['completed'] as bool,
     );
   }
-
-
 }
