@@ -64,8 +64,8 @@ class DbHelper {
       whereArgs: [contact.id],
     );
 
+    print("contact for updation is " + contact.name+"with id "+contact.id.toString());
     print("result for updation is " + result.toString());
-    print("data updated for " + contact.id.toString());
     return result;
   }
 

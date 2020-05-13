@@ -15,17 +15,21 @@ class AddContactPage extends StatefulWidget {
 
   @override
   State<StatefulWidget> createState() {
-    return AddContactPageState();
+    return AddContactPageState(contact);
   }
 }
 
 class AddContactPageState extends State<AddContactPage> {
+  int _id;
   String _name;
   String _mobile;
   String _landline;
   bool _isFav = false;
 
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+  Contact receivedContact;
+
+  AddContactPageState(this.receivedContact);
 
   Widget _buildName() {
     return TextFormField(
@@ -128,10 +132,12 @@ class AddContactPageState extends State<AddContactPage> {
 
                         _formKey.currentState.save();
 
-                        Contact contact =
-                            Contact(_name, _mobile, _landline, _isFav, "NA");
-
-                        DbHelper.dbHelper.insertContact(contact).then(
+                        Contact newContact = Contact(
+                            name: _name,
+                            mobile: _mobile,
+                            landLine: _landline,
+                            fav: _isFav);
+                        DbHelper.dbHelper.insertContact(newContact).then(
                               (storedContact) =>
                                   BlocProvider.of<ContactBloc>(context).add(
                                 AddContactEvent(storedContact),
@@ -156,12 +162,18 @@ class AddContactPageState extends State<AddContactPage> {
                             _formKey.currentState.save();
 
                             Contact newContact = Contact(
-                                _name, _mobile, _landline, _isFav, "NA");
-                            print("id before updating is "+widget.contactId.toString());
-                            DbHelper.dbHelper.updateContact(widget.contact).then(
+                                id: receivedContact.id,
+                                name: _name,
+                                mobile: _mobile,
+                                landLine: _landline,
+                                fav: _isFav);
+                            print("id before updating is " +
+                                newContact.id.toString());
+                            DbHelper.dbHelper.updateContact(newContact).then(
                                   (storedContact) =>
                                       BlocProvider.of<ContactBloc>(context).add(
-                                    UpdateContactEvent(widget.contactId, newContact),
+                                    UpdateContactEvent(
+                                        widget.contactId, newContact),
                                   ),
                                 );
                             print("popping out");
@@ -174,8 +186,9 @@ class AddContactPageState extends State<AddContactPage> {
                             style: TextStyle(color: Colors.red, fontSize: 16),
                           ),
                           onPressed: () {
-                            DbHelper.dbHelper.deleteContact(widget.contactId).then(
-                                    (storedContact) =>
+                            DbHelper.dbHelper
+                                .deleteContact(receivedContact.id)
+                                .then((storedContact) =>
                                     BlocProvider.of<ContactBloc>(context).add(
                                       DeleteContactEvent(widget.contactId),
                                     ));
