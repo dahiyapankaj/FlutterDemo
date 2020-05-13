@@ -7,13 +7,20 @@ import 'package:flutterapp/events/SetContactsEvent.dart';
 import 'package:flutterapp/models/Contact.dart';
 
 import 'AddContactPage.dart';
+import 'SlidingDrawer.dart';
 
 class ContactsList extends StatefulWidget {
+  String name;
+  ContactsList(this.name);
+
   @override
-  _ContactsListState createState() => _ContactsListState();
+  _ContactsListState createState() => _ContactsListState(name);
 }
 
 class _ContactsListState extends State<ContactsList> {
+  String name;
+  _ContactsListState(this.name);
+
   @override
   void initState() {
     super.initState();
@@ -28,6 +35,7 @@ class _ContactsListState extends State<ContactsList> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: Text("Contact List")),
+      drawer: SlidingDrawer(name),
       floatingActionButton: FloatingActionButton(
         child: Icon(Icons.add),
         onPressed: () => Navigator.push(

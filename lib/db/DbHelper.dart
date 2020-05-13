@@ -55,17 +55,17 @@ class DbHelper {
   }
 
   //  Function to update the contact in database
-  Future<int> updateContact(Contact contact , int contactId) async {
+  Future<int> updateContact(Contact contact) async {
     final db = await this.db;
     var result = await db.update(
       TABLE_CONTACT,
       contact.toMap(),
       where: "id = ?",
-      whereArgs: [contactId],
+      whereArgs: [contact.id],
     );
 
     print("result for updation is " + result.toString());
-    print("data updated for " + contactId.toString());
+    print("data updated for " + contact.id.toString());
     return result;
   }
 

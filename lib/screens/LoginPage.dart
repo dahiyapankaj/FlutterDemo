@@ -90,7 +90,7 @@ class _LoginPageState extends State<LoginPage> {
             Navigator.push(
               context,
 //              MaterialPageRoute(builder: (context) => TodoList()),
-              MaterialPageRoute(builder: (context) => ContactsPage()),
+              MaterialPageRoute(builder: (context) => ContactsPage(_email)),
             );
           } else {
             Scaffold.of(context).showSnackBar(SnackBar(

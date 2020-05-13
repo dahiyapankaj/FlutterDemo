@@ -158,7 +158,7 @@ class AddContactPageState extends State<AddContactPage> {
                             Contact newContact = Contact(
                                 _name, _mobile, _landline, _isFav, "NA");
                             print("id before updating is "+widget.contactId.toString());
-                            DbHelper.dbHelper.updateContact(widget.contact,widget.contact.id).then(
+                            DbHelper.dbHelper.updateContact(widget.contact).then(
                                   (storedContact) =>
                                       BlocProvider.of<ContactBloc>(context).add(
                                     UpdateContactEvent(widget.contactId, newContact),

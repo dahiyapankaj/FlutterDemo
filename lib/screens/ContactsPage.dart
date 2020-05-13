@@ -4,11 +4,16 @@ import 'package:flutterapp/bloc/ContactBloc.dart';
 import 'package:flutterapp/screens/ContactsList.dart';
 
 class ContactsPage extends StatefulWidget {
+  String name;
+  ContactsPage(this.name);
+
   @override
-  _ContactsPageState createState() => _ContactsPageState();
+  _ContactsPageState createState() => _ContactsPageState(name);
 }
 
 class _ContactsPageState extends State<ContactsPage> {
+   String _name;
+  _ContactsPageState(this._name);
   @override
   Widget build(BuildContext context) {
     return BlocProvider<ContactBloc>(
@@ -16,7 +21,7 @@ class _ContactsPageState extends State<ContactsPage> {
       child: MaterialApp(
           debugShowCheckedModeBanner: false,
           title: 'Sqflite Tutorial',
-          home: ContactsList()),
+          home: ContactsList(_name)),
     );
   }
 }
