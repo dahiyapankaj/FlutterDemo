@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutterapp/bloc/ContactBloc.dart';
@@ -6,6 +8,7 @@ import 'package:flutterapp/events/AddContactEvent.dart';
 import 'package:flutterapp/events/DeleteContactEvent.dart';
 import 'package:flutterapp/events/UpdateContactEvent.dart';
 import 'package:flutterapp/models/Contact.dart';
+import 'package:image_picker/image_picker.dart';
 
 class AddContactPage extends StatefulWidget {
   final Contact contact;
@@ -20,11 +23,11 @@ class AddContactPage extends StatefulWidget {
 }
 
 class AddContactPageState extends State<AddContactPage> {
-  int _id;
   String _name;
   String _mobile;
   String _landline;
   bool _isFav = false;
+  File _image;
 
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   Contact receivedContact;
@@ -93,27 +96,6 @@ class AddContactPageState extends State<AddContactPage> {
         ));
   }
 
-//  Widget _buildIsFav() {
-//    return SwitchListTile(
-//      title: Text("Fav?", style: TextStyle(fontSize: 20)),
-//      value: _isFav,
-//      onChanged: (bool newValue) => setState(() {
-//        _isFav = newValue;
-//      }),
-//    );
-//  }
-
-//  Widget _buildIsFav() {
-//    return Container(
-//      padding: EdgeInsets.all(0),
-//      child: IconButton(
-//        icon: (_isFav ? Icon(Icons.star) : Icon(Icons.star_border)),
-//        color: Colors.blue,
-//        onPressed: _toggleFavorite,
-//      ),
-//    );
-//  }
-
   void _toggleFavorite() {
     setState(() {
       _isFav = !_isFav;
@@ -131,9 +113,7 @@ class AddContactPageState extends State<AddContactPage> {
           color: Colors.blue, // border color
           shape: BoxShape.circle,
         ),
-        child: CircleAvatar(
-            backgroundColor: Colors.white,
-            child: Icon(Icons.add_a_photo, color: Colors.blue, size: 40)));
+        child: _getImage());
   }
 
   @override
@@ -151,12 +131,14 @@ class AddContactPageState extends State<AddContactPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Add Contact"),
+        title: Text(getTitle()),
         actions: <Widget>[
           Padding(
               padding: EdgeInsets.only(right: 20.0),
               child: GestureDetector(
-                onTap: () {_toggleFavorite();},
+                onTap: () {
+                  _toggleFavorite();
+                },
                 child: Icon(
                   _isFav ? Icons.star : Icons.star_border,
                   size: 26.0,
@@ -211,58 +193,81 @@ class AddContactPageState extends State<AddContactPage> {
                   : Row(
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       children: <Widget>[
-                        RaisedButton(
-                          child: Text(
-                            "Update",
-                            style: TextStyle(color: Colors.blue, fontSize: 16),
-                          ),
-                          onPressed: () {
-                            if (!_formKey.currentState.validate()) {
-                              return;
-                            }
-                            _formKey.currentState.save();
+                        Material(
+                            elevation: 5.0,
+                            borderRadius: BorderRadius.circular(32.0),
+                            color: Colors.blue,
+                            child: MaterialButton(
+                              child: Text(
+                                "Update",
+                                textAlign: TextAlign.center,
+                                style: TextStyle(
+                                    color: Colors.white, fontSize: 16),
+                              ),
+                              onPressed: () {
+                                if (!_formKey.currentState.validate()) {
+                                  return;
+                                }
+                                _formKey.currentState.save();
 
-                            Contact newContact = Contact(
-                                id: receivedContact.id,
-                                name: _name,
-                                mobile: _mobile,
-                                landLine: _landline,
-                                fav: _isFav);
-                            print("id before updating is " +
-                                newContact.id.toString());
-                            DbHelper.dbHelper.updateContact(newContact).then(
-                                  (storedContact) =>
-                                      BlocProvider.of<ContactBloc>(context).add(
-                                    UpdateContactEvent(
-                                        widget.contactId, newContact),
-                                  ),
-                                );
-                            print("popping out");
-                            Navigator.pop(context);
-                          },
-                        ),
-                        RaisedButton(
-                          child: Text(
-                            "Delete",
-                            style: TextStyle(color: Colors.red, fontSize: 16),
-                          ),
-                          onPressed: () {
-                            DbHelper.dbHelper
-                                .deleteContact(receivedContact.id)
-                                .then((storedContact) =>
-                                    BlocProvider.of<ContactBloc>(context).add(
-                                      DeleteContactEvent(widget.contactId),
-                                    ));
-                            Navigator.pop(context);
-                          },
-                        ),
-                        RaisedButton(
-                          child: Text(
-                            "Cancel",
-                            style: TextStyle(color: Colors.red, fontSize: 16),
-                          ),
-                          onPressed: () => Navigator.pop(context),
-                        ),
+                                Contact newContact = Contact(
+                                    id: receivedContact.id,
+                                    name: _name,
+                                    mobile: _mobile,
+                                    landLine: _landline,
+                                    fav: _isFav);
+                                print("id before updating is " +
+                                    newContact.id.toString());
+                                DbHelper.dbHelper
+                                    .updateContact(newContact)
+                                    .then(
+                                      (storedContact) =>
+                                          BlocProvider.of<ContactBloc>(context)
+                                              .add(
+                                        UpdateContactEvent(
+                                            widget.contactId, newContact),
+                                      ),
+                                    );
+                                print("popping out");
+                                Navigator.pop(context);
+                              },
+                            )),
+                        Material(
+                            elevation: 5.0,
+                            borderRadius: BorderRadius.circular(32.0),
+                            color: Colors.blue,
+                            child: MaterialButton(
+                              child: Text(
+                                "Delete",
+                                textAlign: TextAlign.center,
+                                style: TextStyle(
+                                    color: Colors.white, fontSize: 16),
+                              ),
+                              onPressed: () {
+                                DbHelper.dbHelper
+                                    .deleteContact(receivedContact.id)
+                                    .then((storedContact) =>
+                                        BlocProvider.of<ContactBloc>(context)
+                                            .add(
+                                          DeleteContactEvent(widget.contactId),
+                                        ));
+                                Navigator.pop(context);
+                              },
+                            )),
+                        Material(
+                            elevation: 5.0,
+                            borderRadius: BorderRadius.circular(32.0),
+                            color: Colors.blue,
+                            child: MaterialButton(
+                                child: Text(
+                                  "Cancel",
+                                  textAlign: TextAlign.center,
+                                  style: TextStyle(
+                                      color: Colors.white, fontSize: 16),
+                                ),
+                                onPressed: () => getImage(ImageSource
+                                    .gallery) //Navigator.pop(context),
+                                )),
                       ],
                     ),
             ],
@@ -270,5 +275,31 @@ class AddContactPageState extends State<AddContactPage> {
         ),
       )),
     );
+  }
+
+  Widget _getImage() {
+    return CircleAvatar(
+        backgroundColor: Colors.white, child: getChildForImage());
+  }
+
+  String getTitle() {
+    return widget.contact == null ? "Add Contact" : "Update Contact";
+  }
+
+  Future<void> getImage(ImageSource imageSource) async {
+    try {
+      final imageFile = await ImagePicker.pickImage(source: imageSource);
+      setState(() {
+        _image = imageFile;
+      });
+    } catch (e) {
+      print(e);
+    }
+  }
+
+  Widget getChildForImage() {
+    return _image == null
+        ? Icon(Icons.add_a_photo, color: Colors.blue, size: 40)
+        : Image.file(_image);
   }
 }
